@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Vault{% endblock %}</title>
+
+  <!-- Bootstrap + Icons + Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    
+/* Folder tree Styling */
+
+
+.folder-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+
+  .folder-entry:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .folder-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 250px;
+    flex-grow: 1;
+  }
+
+  .folder-name {
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    word-break: break-word;
+  }
+
+  .folder-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .folder-actions form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .folder-actions select {
+    min-width: 180px;
+  }
+
+  .folder-tree ul {
+    margin-top: 0.5rem;
+  }
+
+  .folder-tree li {
+    margin-bottom: 1rem;
+  }
+
+
+    body {
+      font-family: 'Urbanist', sans-serif;
+      background: linear-gradient(to right top, #122a35, #203a43, #0f2027);
+      background-attachment: fixed;
+      color: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .navbar-brand, .nav-link, .table th, .table td {
+      color: #ffffff !important;
+    }
+
+
+
+
+
+    .navbar {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .navbar-brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .navbar .nav-link {
+      color: #b9fbc0 !important;
+  transition: color 0.2s ease;
+
+    }
+
+    .navbar .nav-link:hover {
+      color: #74c0fc !important;
+    }
+
+    .sidebar {
+      width: 240px;
+      height: 100vh;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px 15px;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+    }
+
+    .sidebar .nav-link {
+      color: #ffffff !important;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+  background-color: rgba(255,255,255,0.15);
+  transform: translateX(5px);
+}
+    .sidebar .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.08);
+      font-weight: 600;
+      color: #ffffff !important;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      margin-top: 56px;
+      padding: 30px;
+    }
+.card-body-shared {
+  background-color: rgba(0, 0, 26, 0.062);
+  border-radius: 6px;
+  border: 1px dotted rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.card-body-shared:hover {
+  background-color: rgba(3, 3, 3, 0.555);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+ 
+.card-body {
+  background-color: transparent;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  border-radius: 3px;
+}
+
+.card-body:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(4px);
+}
+
+    .table thead th {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .table td, .table th {
+      color: #e3e6ea;
+    }
+
+    .btn-outline-secondary {
+      color: #f1f1f1;
+      border-color: #666;
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: #ffffff22;
+    }
+.alert {
+  display: inline-block;
+  max-width: 90%;
+  padding: 1rem 1.5rem;
+  margin: 1rem auto;
+  border-radius: 12px;
+  font-weight: 500;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.6); /* semi-transparent for dark theme */
+  border: 1px solid #00c6ff;
+  animation: fadeIn 0.4s ease-in-out;
+  color: #f0f2f5;
+  transition: all 0.3s ease;
+}
+
+.alert-success {
+  background-color: rgba(25, 135, 84, 0.15) !important;
+  border-color: #198754 !important;
+  color: #8fffb5;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.15) !important;
+  border-color: #dc3545 !important;
+  color: #ffb3ba;
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  border-color: #ffc107 !important;
+  color: #fff3cd;
+}
+
+.alert-info {
+  background-color: rgba(10, 140, 167, 0.15) !important;
+  border-color: #0a8ca7 !important;
+  color: #b5efff;
+}
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sidebar .nav-link.logout-red,
+    .offcanvas .nav-link.logout-red {
+      color: #ff4d4f !important;
+      font-weight: bold !important;
+    }
+
+    .sidebar .nav-link.logout-red:hover,
+    .offcanvas .nav-link.logout-red:hover {
+      background-color: rgba(255, 77, 79, 0.2);
+      color: #ff4d4f !important;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        margin-left: 0;
+        margin-top: 56px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm px-3 py-2">
+  <a class="navbar-brand text-white" href="{{ url_for('view') }}">
+    <i class="bi bi-shield-lock-fill me-2"></i>XPASS
+  </a>
+
+  <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse justify-content-end">
+    <form method="get" action="{{ url_for('search_credentials') }}" class="d-none d-md-flex me-3" role="search">
+      <input class="form-control form-control-sm shadow-sm" type="search" name="q" placeholder="Search passwords..." required>
+    </form>
+
+    <ul class="navbar-nav align-items-center">
+      <li class="nav-item dropdown me-3">
+        <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" onclick="clearNotifications()">
+          <i class="bi bi-bell-fill"></i>
+          {% if global_notifications|length > 0 %}
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ global_notifications|length }}
+          </span>
+          {% endif %}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="width: 300px;">
+          <li class="dropdown-header fw-semibold">🔔 Notifications</li>
+          {% if global_notifications %}
+            {% for note in global_notifications %}
+              <li class="dropdown-item small text-wrap text-muted">
+                {{ note.message }}<br>
+                <small class="text-muted">{{ note.timestamp.strftime('%b %d, %H:%M') }}</small>
+              </li>
+            {% endfor %}
+          {% else %}
+            <li><span class="dropdown-item text-muted">No recent notifications</span></li>
+          {% endif %}
+        </ul>
+      </li>
+
+      <li class="nav-item d-flex align-items-center px-2 text-light">
+  <i class="bi bi-person-circle me-2 fs-5"></i>
+  <span class="fw-semibold">{{ session.get('email') or 'User' }}</span>
+</li>
+
+    </ul>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar d-none d-md-block">
+  <ul class="nav flex-column">
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('view') }}"><i class="bi bi-key-fill me-2"></i>My Passwords</a></li>
+    
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('shared') }}"><i class="bi bi-share-fill me-2"></i>Shared with Me</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('folders') }}"><i class="bi bi-folder-fill me-2"></i>Folder Management</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_sharing') }}"><i class="bi bi-ban-fill me-2"></i>Revoke Sharing</a></li>
+    {% if session.get('role') == 'admin' %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="bi bi-person-fill-gear me-2"></i>Admin Panel</a></li>
+    {% endif %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('import_export') }}"><i class="bi bi-cloud-arrow-down-fill me-2"></i>Import/Export</a></li>
+    <li class="nav-item">
+      <a class="nav-link logout-red" href="{{ url_for('logout') }}">
+        <i class="bi bi-box-arrow-right me-2"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Offcanvas Sidebar (Mobile) -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">XPASS</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('view') }}"><i class="bi bi-key me-2"></i>My Passwords</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('shared') }}"><i class="bi bi-share me-2"></i>Shared with Me</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('folders') }}"><i class="bi bi-folder2 me-2"></i>Folder Manager</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_sharing') }}"><i class="bi bi-gear me-2"></i>Manage Sharing</a></li>
+      {% if session.get('role') == 'admin' %}
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="bi bi-person-gear me-2"></i>Admin Panel</a></li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link logout-red" href="{{ url_for('logout') }}">
+          <i class="bi bi-box-arrow-right me-2"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        {% set alert_class = 'info' %}
+        {% if category in ['success', 'danger', 'warning', 'info', 'primary', 'secondary', 'dark', 'light'] %}
+          {% set alert_class = category %}
+        {% endif %}
+        <div class="alert alert-{{ alert_class }} alert-dismissible fade show shadow-sm" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function clearNotifications() {
+    fetch('/notifications/clear', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+  }
+</script>
+
+</body>
+</html>

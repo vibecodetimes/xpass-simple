@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if edit_cred else 'Add' }} Credential{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">{{ 'Edit Credential' if edit_cred else 'Add New Credential' }}</h2>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() | safe }}">
+
+    <div class="mb-3">
+      <label class="form-label">Folder</label>
+      <select name="folder_id" class="form-select" required>
+        <option value="">-- Select Folder --</option>
+        {% for folder in folders %}
+          <option value="{{ folder.id }}" 
+            {% if edit_cred and folder.id == edit_cred.folder_id %}selected{% elif folder_id_default and folder.id == folder_id_default %}selected{% endif %}>
+            {{ folder.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" class="form-control" required value="{{ edit_cred.name if edit_cred else '' }}">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">URL</label>
+        <div class="input-group">
+          <select class="form-select" id="protocolSelect" onchange="updateProtocol()">
+            <option>https://</option>
+            <option>http://</option>
+          </select>
+          <input type="text" id="urlInput" name="url" class="form-control" required value="{{ edit_cred.url if edit_cred else '' }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" value="{{ edit_cred.username if edit_cred else '' }}">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required value="{{ edit_cred.decrypted_password if edit_cred else '' }}">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Notes</label>
+      <textarea name="notes" class="form-control" rows="3">{{ edit_cred.notes if edit_cred else '' }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ 'Save Changes' if edit_cred else 'Save' }}</button>
+    {% if edit_cred %}
+      <a href="{{ url_for('index') }}" class="btn btn-secondary ms-2">Cancel</a>
+    {% endif %}
+  </form>
+
+  {% if last_entry %}
+    <hr class="my-4">
+    <h4 class="mb-3">Last Entry Added:</h4>
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Name:</strong> {{ last_entry.name }}</li>
+      <li class="list-group-item"><strong>URL:</strong> {{ last_entry.url }}</li>
+      <li class="list-group-item">
+        <strong>Password:</strong>
+        <span id="showPass">••••••</span>
+        <input type="hidden" id="realPass" value="{{ last_entry.decrypted_password }}">
+        <input type="checkbox" onclick="toggleRealPass()"> Show
+      </li>
+      {% if last_entry.notes %}
+        <li class="list-group-item"><strong>Notes:</strong> {{ last_entry.notes }}</li>
+      {% endif %}
+    </ul>
+  {% endif %}
+</div>
+
+<script>
+  function updateProtocol() {
+    const select = document.getElementById('protocolSelect');
+    const input = document.getElementById('urlInput');
+    input.value = select.value + input.value.replace(/^https?:\/\//, '');
+  }
+
+  function toggleRealPass() {
+    const show = document.getElementById("showPass");
+    const real = document.getElementById("realPass").value;
+    show.innerText = show.innerText === '••••••' ? real : '••••••';
+  }
+
+  window.onload = function() {
+    const input = document.getElementById('urlInput');
+    const select = document.getElementById('protocolSelect');
+    select.value = input.value.startsWith('http://') ? 'http://' : 'https://';
+  };
+</script>
+{% endblock %}

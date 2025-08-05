@@ -1,0 +1,66 @@
+{% extends "login_base.html" %}
+{% block title %}Enable 2FA{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #011a1a, #00472c);
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    border: none;
+  }
+
+  .form-label {
+    color: #ffffff;
+  }
+
+  .text-center {
+    color: #ffffff;
+  }
+
+  .qr-img {
+    border: 6px solid white;
+    border-radius: 12px;
+    padding: 6px;
+    background: #fff;
+  }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow-lg border-0 p-4" style="max-width: 450px; width: 100%; border-radius: 1rem;">
+    <div class="text-center mb-4">
+      <i class="bi bi-shield-lock-fill" style="font-size: 2.5rem; color: #e5f322;"></i>
+      <h4 class="fw-bold text-white mt-2">Enable 2FA</h4>
+      <small class="text-white">Scan the QR code with Google Authenticator or similar app</small>
+    </div>
+
+    <div class="text-center mb-3">
+      <img src="/qrcode" alt="2FA QR Code" class="qr-img" width="200" height="200">
+
+    </div>
+
+    <form method="POST" action="{{ url_for('confirm_2fa') }}">
+         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label for="otp" class="form-label">
+          <i class="bi bi-key-fill me-1"></i>Enter 6-digit Code
+        </label>
+        <input type="text" name="otp" class="form-control" placeholder="e.g. 123456" required>
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-shield-check me-1"></i> Confirm & Enable 2FA
+        </button>
+      </div>
+    </form>
+
+    <div class="text-center mt-3">
+      <small class="bi bi-qr-code-scan me-1"> Use apps like Google Authenticator, Authy, or Microsoft Authenticator</small>
+    </div>
+  </div>
+</div>
+{% endblock %}

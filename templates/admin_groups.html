@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Manage Groups{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 fw-bold"><i class="bi bi-people-fill text-primary"></i> Group Management</h2>
+
+  <!-- Create Group Form -->
+  <form method="post" class="row g-2 align-items-center mb-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="col-md-4">
+      <input type="text" name="group_name" class="form-control" placeholder="Group Name" required>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">➕ Create Group</button>
+    </div>
+  </form>
+
+  <!-- List of Groups -->
+  {% if groups %}
+    <div class="accordion" id="groupAccordion">
+      {% for group in groups %}
+      <div class="accordion-item mb-3">
+        <h2 class="accordion-header" id="heading{{ group.id }}">
+          <button class="accordion-button collapsed d-flex justify-content-between w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ group.id }}">
+            <span><i class="bi bi-people text-primary me-2"></i> {{ group.name }}</span>
+          </button>
+        </h2>
+        <div id="collapse{{ group.id }}" class="accordion-collapse collapse" data-bs-parent="#groupAccordion">
+          <div class="accordion-body">
+            <!-- Rename & Delete -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+              <form method="post" action="{{ url_for('rename_group', group_id=group.id) }}" class="d-flex gap-2 flex-grow-1">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="new_name" class="form-control form-control-sm" value="{{ group.name }}" required>
+                <button type="submit" class="btn btn-sm btn-outline-primary">✏️ Edit</button>
+              </form>
+              <form method="post" action="{{ url_for('delete_group', group_id=group.id) }}" onsubmit="return confirm('Delete this group permanently?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </form>
+            </div>
+
+            <!-- Members -->
+            <form method="post" action="{{ url_for('update_group_members', group_id=group.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
+                {% for user in users %}
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="user_ids" value="{{ user.id }}"
+                      {% if user in group.members %}checked{% endif %}>
+                    <label class="form-check-label">{{ user.username }}</label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="mt-3">
+                <button type="submit" class="btn btn-outline-success btn-sm">
+                  <i class="bi bi-check-circle"></i> Save Members
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No groups created yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

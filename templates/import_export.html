@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Import / Export Credentials{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="mb-4">
+    <h2 class="fw-bold"><i class="bi bi-lock-fill"></i> Import / Export Credentials</h2>
+    <p class="text-muted">Securely back up or restore your credentials using encrypted files.</p>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <!-- Export Card -->
+    <div class="col">
+      <div class="card shadow-sm border-0 h-100 d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <h4 class="card-title mb-3 text-success"><i class="bi bi-file-earmark-arrow-down-fill"></i> Export</h4>
+          <p class="text-muted">Download your credentials as an encrypted file secured with a password.</p>
+
+          <form method="POST" action="{{ url_for('export_credentials') }}" class="mt-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+              <label for="export_password" class="form-label"><i class="bi bi-key-fill"></i> Encryption Password</label>
+              <input type="password" name="export_password" id="export_password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="export_folder_id" class="form-label"><i class="bi bi-folder-fill"></i> Folder to Export</label>
+              <select name="export_folder_id" id="export_folder_id" class="form-select" required>
+                {% for folder in folders %}
+                  <option value="{{ folder.id }}">{{ folder.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button class="btn btn-outline-success w-100">
+              <i class="bi bi-cloud-arrow-down"></i> Export Encrypted File
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Card -->
+    <div class="col">
+      <div class="card shadow-sm border-0 h-100 d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <h4 class="card-title mb-3 text-primary"><i class="bi bi-file-earmark-arrow-up-fill"></i> Import</h4>
+          <p class="text-muted">Upload an encrypted file and provide the password to restore credentials.</p>
+
+          <form method="POST" enctype="multipart/form-data" class="mt-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="mb-3">
+              <label for="file" class="form-label"><i class="bi bi-file-earmark-lock2-fill"></i> Encrypted File (.enc or .json)</label>
+              <input type="file" name="file" id="file" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="import_password" class="form-label"><i class="bi bi-key-fill"></i> Decryption Password</label>
+              <input type="password" name="import_password" id="import_password" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="import_folder_id" class="form-label"><i class="bi bi-folder-fill"></i> Import Into Folder</label>
+              <select name="import_folder_id" id="import_folder_id" class="form-select" required>
+                {% for folder in folders %}
+                  <option value="{{ folder.id }}">{{ folder.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-outline-primary w-100">
+              <i class="bi bi-cloud-arrow-up"></i> Import Encrypted File
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manage Folder Sharing{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4"><i class="bi bi-people-fill text-primary"></i> Manage Folder Sharing</h2>
+
+  {% if folders %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  {% for folder in folders %}
+    <div class="col">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-header text-white fw-semibold d-flex justify-content-between align-items-center"
+     style="background: linear-gradient(90deg, #114a5c, #072070);">
+
+          <span><i class="bi bi-folder-fill text-warning me-2"></i> {{ folder.name }}</span>
+          <span class="badge bg-info text-dark">{{ folder.shared_with | length }} shared</span>
+        </div>
+        <div class="card-body">
+          {% if folder.shared_with %}
+            <ul class="list-group list-group-flush">
+              {% for share in folder.shared_with %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div><i class="bi bi-person-circle me-2 text-secondary"></i> {{ share.user.username }}</div>
+                  <form method="post" action="{{ url_for('unshare_folder') }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="folder_id" value="{{ folder.id }}">
+                    <input type="hidden" name="shared_with_user_id" value="{{ share.user.id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Unshare this user?')">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </form>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="text-muted text-center py-3">
+              🚫 Not shared with anyone
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="alert alert-warning mt-4 text-center">
+    <i class="bi bi-folder-x fs-4"></i><br>
+    You have not shared any folders yet.
+  </div>
+{% endif %}
+
+</div>
+{% endblock %}

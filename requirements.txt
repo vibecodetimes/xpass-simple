@@ -1,0 +1,9 @@
+Flask
+Flask_SQLAlchemy
+Flask_WTF
+Flask_Limiter
+cryptography==41.0.3
+PyMySQL
+WTForms
+python-dotenv
+

@@ -1,0 +1,92 @@
+{% extends "login_base.html" %}
+{% block title %}Login{% endblock %}
+
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #011a1a, #00472c);
+  }
+
+
+  .card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    border: none;
+    
+  }
+  .form-label {
+    color: #ffffff;
+  }
+  .text-center{
+    color: #ffffff;
+  }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow-lg border-0 p-4" style="max-width: 400px; width: 100%; border-radius: 1rem;">
+    <div class="text-center mb-4">
+      <div class="mb-2">
+        <i class="bi bi-shield-lock-fill" style="font-size: 2.5rem; color: #e5f322;"></i>
+      </div>
+      <h4  class="fw-bold text-white" >Welcome to XPASS</h4>
+      <small class="text-warning">Please log in to continue</small>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-warning">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+   <form method="post">
+  {{ form.hidden_tag() }}
+
+  <div class="mb-3">
+    <label for="identifier" class="form-label">
+      <i class="bi bi-person-fill me-1"></i>Username or Email
+    </label>
+    {{ form.identifier(class="form-control", placeholder="Enter username or email") }}
+    {% if form.identifier.errors %}
+      <small class="text-danger">{{ form.identifier.errors[0] }}</small>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label">
+      <i class="bi bi-lock-fill me-1"></i>Password
+    </label>
+    {{ form.password(class="form-control", placeholder="••••••") }}
+    {% if form.password.errors %}
+      <small class="text-danger">{{ form.password.errors[0] }}</small>
+    {% endif %}
+  </div>
+
+  <div class="d-grid mb-3">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-box-arrow-in-right me-1"></i> Login
+    </button>
+  </div>
+</form>
+
+    <div class= "text-center">
+      <div class="text-center mt-3">
+  <div class="d-inline-block fw-semibold py-2 px-3 shadow-sm" style="
+    background: linear-gradient(to right, #000000, #000000);
+    color: #10cc5f;
+    border-radius: 12px;
+    font-size: 1rem;
+  ">
+    <i class="bi bi-shield-lock-fill me-2" style="font-size: 1.2rem;"></i>
+    Your credentials are safe with <strong>XPASS</strong>
+  </div>
+</div>
+</div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

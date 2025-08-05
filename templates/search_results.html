@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-search"></i> Results for "<strong>{{ query }}</strong>"</h2>
+
+{% if results %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th>
+        <th>Username</th>
+        <th>URL</th>
+        <th>Password</th>
+        <th>Notes</th>
+        <th>Folder</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cred in results %}
+      <tr>
+        <td>{{ cred.name }}</td>
+        <td>{{ cred.username or '' }}</td>
+        <td><a href="{{ cred.url }}" target="_blank">{{ cred.url }}</a></td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span id="pw_{{ cred.id }}">••••••</span>
+            <input type="hidden" id="raw_{{ cred.id }}" value="{{ cred.decrypted_password }}">
+            <button class="btn btn-sm btn-outline-secondary" onclick="togglePassword('{{ cred.id }}')">
+  <i class="bi bi-eye"></i>
+</button>
+<button class="btn btn-sm btn-outline-primary" onclick="copyPassword('{{ cred.id }}')">
+  <i class="bi bi-clipboard"></i>
+</button>
+          </div>
+        </td>
+        <td>{{ cred.notes or '' }}</td>
+        <td>
+         {{ cred.folder_path }}
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert alert-warning mt-3">No credentials found matching your search.</div>
+{% endif %}
+
+<script>
+  function togglePassword(id) {
+  const span = document.getElementById('pw_' + id);
+  const raw = document.getElementById('raw_' + id).value;
+  span.innerText = span.innerText === '••••••' ? raw : '••••••';
+}
+
+function copyPassword(id) {
+  const value = document.getElementById('raw_' + id).value;
+  navigator.clipboard.writeText(value).then(() => {
+    alert('Password copied!');
+  });
+}
+
+</script>
+{% endblock %}

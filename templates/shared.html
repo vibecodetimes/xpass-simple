@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Shared With Me{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="card shadow-sm rounded p-4">
+    <h4 class="mb-4">
+      <i class="bi bi-folder-symlink me-2"></i> Folders Shared With You
+    </h4>
+{% if folders %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mb-4">
+  {% for folder in folders %}
+    <div class="col">
+      <a href="{{ url_for('view', folder_id=folder.id) }}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body-shared d-flex flex-column">
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-folder-fill text-warning me-2 fs-4"></i>
+              <h6 class="mb-0 text-truncate">{{ folder.name }}</h6>
+            </div>
+            <div class="mt-auto">
+              <small class="text-muted">Shared by: {{ folder.parent.user.username if folder.parent else folder.user.username }}</small>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="text-center text-muted py-4">
+    <i class="bi bi-inbox fs-2 mb-2"></i>
+    <p class="mb-0">No folders have been shared with you.</p>
+  </div>
+{% endif %}
+  </div>
+</div>
+{% endblock %}
