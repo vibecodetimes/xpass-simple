@@ -33,12 +33,29 @@ from flask import send_file
 
 # Load .env into environment
 load_dotenv()
-FORCE_2FA = os.getenv("FORCE_2FA", "False").lower() == "true"
-# Read Fernet key path from .env
-with open(os.getenv("FERNET_KEY_PATH"), "rb") as key_file:
-    secret_key = key_file.read()
+passphrase = os.getenv("FERNET_PASSPHRASE")
+salt_b64 = os.getenv("FERNET_SALT")
 
-fernet = Fernet(secret_key)
+if not passphrase or not salt_b64:
+    raise RuntimeError("Missing FERNET_PASSPHRASE or FERNET_SALT in environment")
+
+try:
+    salt = base64.b64decode(salt_b64)
+except Exception as e:
+    raise ValueError("Invalid base64-encoded FERNET_SALT") from e
+
+# Derive the key using PBKDF2
+kdf = PBKDF2HMAC(
+    algorithm=hashes.SHA256(),
+    length=32,
+    salt=salt,
+    iterations=200_000,  # strong against brute-force
+)
+
+derived_key = base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
+fernet = Fernet(derived_key)
+FORCE_2FA = os.getenv("FORCE_2FA", "False").lower() == "true"
+
 
 app = Flask(__name__)
 
