@@ -174,3 +174,12 @@ rm create_env.py create_admin.py
 | 2FA not working | Ensure `FORCE_2FA=True` and system clock is accurate |
 
 
+
+## 💖 Support the Project
+
+If you find **XPASS** useful, consider supporting its development!  
+
+☕ **Donate via PayPal:**  
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/mumair590)
+
+Your support helps keep XPASS free, secure, and improving 💫
