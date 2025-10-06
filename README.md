@@ -1,3 +1,7 @@
+<img width="1890" height="957" alt="image" src="https://github.com/user-attachments/assets/ec35f599-d418-400d-8d7e-23863f47a311" />
+
+
+
 # 🔐 XPASS – Self-Hosted Encrypted Password Manager
 
 XPASS is a **Flask + MySQL** based password management system built for **secure, offline, and LAN-based deployments**.  
