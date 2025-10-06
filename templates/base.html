@@ -76,9 +76,9 @@
 
     body {
       font-family: 'Urbanist', sans-serif;
-      background: linear-gradient(to right top, #122a35, #203a43, #0f2027);
+      background: linear-gradient(to right top, #000000, #030218, #00090f);
       background-attachment: fixed;
-      color: #f0f2f5;
+      color: #f0f2f5; 
       min-height: 100vh;
     }
 
@@ -92,7 +92,7 @@
 
 
     .navbar {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      background: linear-gradient(to right, #002a3b, #02265c, #091077);
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
@@ -117,18 +117,20 @@
       position: fixed;
       top: 56px;
       left: 0;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgb(2, 17, 41);
       padding: 20px 15px;
       border-right: 1px solid rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
     }
 
     .sidebar .nav-link {
+      border-radius: 8px;
       color: #ffffff !important;
       transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
     .sidebar .nav-link:hover {
+    border-radius: 8px;
   background-color: rgba(255,255,255,0.15);
   transform: translateX(5px);
 }
@@ -191,9 +193,9 @@
       background-color: #ffffff22;
     }
 .alert {
-  display: inline-block;
-  max-width: 90%;
-  padding: 1rem 1.5rem;
+  display :inline-block;
+  max-width: 100%;
+  padding: 1rem 3rem 1rem 1.5rem;
   margin: 1rem auto;
   border-radius: 12px;
   font-weight: 500;
